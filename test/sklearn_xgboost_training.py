@@ -91,7 +91,7 @@ print "length of sig, bkg without NaN: bk:", len(data.loc[data.target.values == 
 #################################################################################
 
 
-'''
+
 # make plots for variables---------------------------------------------------------
 dataSig = data.ix[data.target.values == 1]
 dataBk  = data.ix[data.target.values == 0]
@@ -134,7 +134,7 @@ for feature in trainVars:
     plt.xlabel(feature)
     plt.savefig("plots/plot_%s.png" % feature)
     plt.clf()
-''' 
+
 
 #############################################################################################  
 # split data for train and test 
@@ -193,12 +193,14 @@ if options.HypOpt==True :
     	'max_depth': [2,3], #[1,2,3,4],
     	'learning_rate': [0.1, 0.01], #[0.01,0.02,0.03]
     }
-    scoring = "roc_auc"
+    scoring = "roc_auc" # BDT performance evaluation parameter.
+                        # roc_aur: area under ROC curve
+                        # https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter
     early_stopping_rounds = 200 # Will train until validation_0-auc hasn't improved in 100 rounds.
     cv=3
     cls = xgb.XGBClassifier()
     fit_params = { "eval_set" : [(valdataset[trainVars].values,valdataset[target])],
-                   "eval_metric" : "auc",
+                   "eval_metric" : "auc", 
                    "early_stopping_rounds" : early_stopping_rounds,
 		   'sample_weight': valdataset[weights].values }
     gs = GridSearchCV(cls, param_grid, scoring, fit_params, cv = cv, verbose = 0)
